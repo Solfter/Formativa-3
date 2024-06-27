@@ -2,17 +2,13 @@ import csv
 import os
 import time
 
-trabajadores = []
+trabajadores = {}
 
 def crear_planilla():
     with open('PlanillaTrabajadores', 'w',) as archivo:
-        trabajador = 'Trabajador'.ljust(20)
-        cargo = 'Cargo'.rjust(5)
-        sueldo_bruto = 'Sueldo Bruto'.rjust(15)
-        desc_salud = 'Desc. Salud'.rjust(25)
-        desc_afp = 'Desc. AFP'.rjust(35)
-        sueldo_liquido = 'Liquido a pagar'.rjust(45)
-        archivo.write(f'{trabajador}{cargo}{sueldo_bruto}{desc_salud}{desc_afp}{sueldo_liquido}')
+        formato_fila = f"{{:<{15}}}  {{:<{10}}}  {{:<{15}}}   {{:<{15}}}   {{:<{15}}}   {{:<{15}}}"
+        archivo.write(formato_fila.format("Trabajador", "Cargo", "Sueldo Bruto", "Desc.Salud", "Desc. AFP", "Líquido a pagar") + '\n')
+        archivo.write('-'*100)
 
 def limpiar_pantalla():
     os.system("cls")
@@ -41,13 +37,16 @@ def registrar_trabajador():
     validar_ingreso = True
     while validar_ingreso:
         try:
-            nombre = input('Ingrese el nombre del trabajador: ')
-            if len(nombre) == 0:
+            trabajador = input('Ingrese el nombre del trabajador: ')
+            if len(trabajador) == 0:
                 print('¡Error! Ingresa un nombre')
                 continue
-            cargo = input('Ingrese el cargo del trabajador: ')
+            cargo = input('Ingrese el cargo del trabajador: ').upper()
             if len(cargo) == 0:
                 print('¡Error! Ingresa un nombre de cargo')
+                continue
+            if cargo not in ['CEO', 'DESARROLLADOR', 'ANALISTA DE DATOS']:
+                print('Debes ingresar uno de los siguientes Cargos: CEO, Desarrollador, Analista de datos')
                 continue
             sueldo_bruto = int(input('Ingrese el sueldo bruto: '))
             if sueldo_bruto <= 0:
@@ -56,20 +55,28 @@ def registrar_trabajador():
             desc_salud = int(sueldo_bruto*0.07)
             desc_afp = int(sueldo_bruto*0.12)
             sueldo_liquido = int(sueldo_bruto*0.81)
-            trabajador = [nombre, cargo, sueldo_bruto, desc_salud, desc_afp, sueldo_liquido]
+            datos_trabajador = {
+                'Trabajador':trabajador, 
+                'Cargo':cargo, 
+                'Sueldo Bruto':sueldo_bruto, 
+                'Desc. Salud':desc_salud, 
+                'Desc. AFP':desc_afp, 
+                'Líquido a pagar':sueldo_liquido
+                }
+            trabajadores.update(datos_trabajador)
             validar_ingreso = False
         except ValueError:
             print('¡Error! Ingresaste un caracter en sueldo bruto')
-    with open('PlanillaTrabajadores', 'w',) as archivo:
-        trabajador = 'Trabajador'.ljust(20)
-        cargo = 'Cargo'.rjust(5)
-        sueldo_bruto = 'Sueldo Bruto'.rjust(15)
-        desc_salud = 'Desc. Salud'.rjust(25)
-        desc_afp = 'Desc. AFP'.rjust(35)
-        sueldo_liquido = 'Liquido a pagar'.rjust(45)
-        archivo.write(f'{trabajador}{cargo}{sueldo_bruto}{desc_salud}{desc_afp}{sueldo_liquido}')
-
-        
+    with open('PlanillaTrabajadores', 'a',) as archivo:
+        formato_fila = f"{{:<{15}}}  {{:<{10}}}  {{:<{15}}}   {{:<{15}}}   {{:<{15}}}   {{:<{15}}}"
+        trabajador = datos_trabajador['Trabajador']
+        cargo = datos_trabajador['Cargo']
+        sueldo_bruto = datos_trabajador['Sueldo Bruto']
+        desc_salud = datos_trabajador['Desc. Salud']
+        desc_afp= datos_trabajador['Desc. AFP']
+        sueldo_liquido= datos_trabajador['Líquido a pagar']
+        archivo.write('\n')
+        archivo.write(formato_fila.format(trabajador, cargo, sueldo_bruto,desc_salud,desc_afp,sueldo_liquido) + '\n')
 
 
 def listar_trabajadores():
@@ -87,7 +94,7 @@ while op != 4:
     elif op == 2:
         listar_trabajadores()
     elif op == 3:
-        pass
+        print(trabajadores)
     elif op == 4:
         print('Saliste del programa...')
 
