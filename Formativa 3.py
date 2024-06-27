@@ -6,12 +6,16 @@ trabajadores = {}
 
 def crear_planilla():
     with open('PlanillaTrabajadores', 'w',) as archivo:
-        formato_fila = f"{{:<{15}}}  {{:<{10}}}  {{:<{15}}}   {{:<{15}}}   {{:<{15}}}   {{:<{15}}}"
+        formato_fila = f"{{:<{15}}}  {{:<{20}}}  {{:<{15}}}   {{:<{15}}}   {{:<{15}}}   {{:<{15}}}"
         archivo.write(formato_fila.format("Trabajador", "Cargo", "Sueldo Bruto", "Desc.Salud", "Desc. AFP", "Líquido a pagar") + '\n')
         archivo.write('-'*100)
 
+
 def limpiar_pantalla():
     os.system("cls")
+
+def dormir(n):
+    time.sleep(n)
 
 def menu():
     print('Bienvenido a nuestra a aplicación'
@@ -23,7 +27,7 @@ def menu():
     validar_op = True
     while validar_op:
         try:
-            op = int(input('¿Que deseas? '))
+            op = int(input('¿Que deseas?: '))
             if op not in range(1,5):
                 print('¡Error! Ingresa una opción válida')
             else:
@@ -67,34 +71,47 @@ def registrar_trabajador():
             validar_ingreso = False
         except ValueError:
             print('¡Error! Ingresaste un caracter en sueldo bruto')
+        print(f'Trabajador {trabajador} ingresado con exito')
     with open('PlanillaTrabajadores', 'a',) as archivo:
-        formato_fila = f"{{:<{15}}}  {{:<{10}}}  {{:<{15}}}   {{:<{15}}}   {{:<{15}}}   {{:<{15}}}"
-        trabajador = datos_trabajador['Trabajador']
-        cargo = datos_trabajador['Cargo']
-        sueldo_bruto = datos_trabajador['Sueldo Bruto']
-        desc_salud = datos_trabajador['Desc. Salud']
-        desc_afp= datos_trabajador['Desc. AFP']
-        sueldo_liquido= datos_trabajador['Líquido a pagar']
+        formato_fila = f"{{:<{15}}}  {{:<{20}}}  {{:<{15}}}   {{:<{15}}}   {{:<{15}}}   {{:<{15}}}"
+        # trabajador = datos_trabajador['Trabajador']
+        # cargo = datos_trabajador['Cargo']
+        # sueldo_bruto = datos_trabajador['Sueldo Bruto']
+        # desc_salud = datos_trabajador['Desc. Salud']
+        # desc_afp= datos_trabajador['Desc. AFP']
+        # sueldo_liquido= datos_trabajador['Líquido a pagar']
         archivo.write('\n')
         archivo.write(formato_fila.format(trabajador, cargo, sueldo_bruto,desc_salud,desc_afp,sueldo_liquido) + '\n')
 
 
 def listar_trabajadores():
+    print('Elegiste listar la lista de trabajadores...')
     with open('PlanillaTrabajadores', 'r') as archivo:
-        contenido = archivo.read()
-        print(contenido)
+            contenido = archivo.read()
+            if len(contenido) <= 199:
+                print('La planilla está vacia')
+            else:
+                print('Planilla de trabajadores:\n\n ', contenido)
 
 
 crear_planilla()
 op = 0
+
 while op != 4:
+    limpiar_pantalla()
     op = menu()
     if op == 1:
+        limpiar_pantalla()
         registrar_trabajador()
+        input()
     elif op == 2:
+        limpiar_pantalla()
         listar_trabajadores()
+        input()
     elif op == 3:
+        limpiar_pantalla
         print(trabajadores)
+        input()
     elif op == 4:
         print('Saliste del programa...')
 
